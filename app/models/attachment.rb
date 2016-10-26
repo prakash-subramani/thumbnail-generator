@@ -5,13 +5,13 @@ class Attachment < ApplicationRecord
                     :path => ":rails_root/public/attachments/:id/:style/:basename.:extension",
                     styles: lambda { |a| a.instance.check_file_type },
                     processors: lambda {
-                        |a| a.is_powerpoint? ? [:ppt_thumbnail] : [:thumbnail]
+                        |a| a.is_powerpoint? ? [:ppt_thumbnail] : (a.is_video? ? [:video_thumbnail] : [:thumbnail])
                     }
 
   validates_attachment_content_type :media, :content_type => ["application/pdf", /\Aimage\/.*\Z/,
                                                                    "application/x-ole-storage",
                                                                    "application/vnd.ms-powerpoint",
-                                                                   "application/vnd.openxmlformats-officedocument.presentationml.presentation"]
+                                                                   "application/vnd.openxmlformats-officedocument.presentationml.presentation", VIDEO_FORMAT]
 
   def is_image?
     self.media_content_type =~ %r(image)
@@ -39,49 +39,15 @@ class Attachment < ApplicationRecord
       {
           :preview => ["500x500>", :jpeg]
       }
-    else
-      {}
+    elsif self.is_video?
+      {
+          :preview => ["500x500>"]
+      }
     end
   end
 
-
-  def video?
-    [ 'application/x-mp4',
-      'video/mpeg',
-      'video/quicktime',
-      'video/x-la-asf',
-      'video/x-ms-asf',
-      'video/x-msvideo',
-      'video/x-sgi-movie',
-      'video/x-flv',
-      'flv-application/octet-stream',
-      'video/3gpp',
-      'video/3gpp2',
-      'video/3gpp-tt',
-      'video/BMPEG',
-      'video/BT656',
-      'video/CelB',
-      'video/DV',
-      'video/H261',
-      'video/H263',
-      'video/H263-1998',
-      'video/H263-2000',
-      'video/H264',
-      'video/JPEG',
-      'video/MJ2',
-      'video/MP1S',
-      'video/MP2P',
-      'video/MP2T',
-      'video/mp4',
-      'video/MP4V-ES',
-      'video/MPV',
-      'video/mpeg4',
-      'video/mpeg4-generic',
-      'video/nv',
-      'video/parityfec',
-      'video/pointer',
-      'video/raw',
-      'video/rtx' ].include?(asset.content_type)
+  def is_video?
+    VIDEO_FORMAT.include?(self.media_content_type)
   end
 
 end

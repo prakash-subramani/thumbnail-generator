@@ -25,8 +25,8 @@ module Paperclip
 
       begin
         success = Paperclip.run('ffmpeg', cmd)
-      rescue PaperclipCommandLineError
-        raise PaperclipError, "There was an error processing the thumbnail for #{@basename}" if whiny
+      rescue Exception => p
+        raise Exception, "There was an error processing the thumbnail for #{@basename}" if whiny
       end
       dst
     end
