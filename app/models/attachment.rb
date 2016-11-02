@@ -1,12 +1,12 @@
 class Attachment < ApplicationRecord
 
   has_attached_file :media,
-                    :url => "/attachments/:id/:style:basename.:extension",
-                    :path => ":rails_root/public/attachments/:id/:style/:basename.:extension",
                     styles: lambda { |a| a.instance.check_file_type },
                     processors: lambda {
                         |a| a.is_powerpoint? ? [:ppt_thumbnail] : (a.is_video? ? [:video_thumbnail] : [:thumbnail])
-                    }
+                    },
+                    :url => "/attachments/:id/:style/:basename.:extension",
+                    :path => ":rails_root/public/attachments/:id/:style/:basename.:extension"
 
   validates_attachment_content_type :media, :content_type => ["application/pdf", /\Aimage\/.*\Z/,
                                                                    "application/x-ole-storage",

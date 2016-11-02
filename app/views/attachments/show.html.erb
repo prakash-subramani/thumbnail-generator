@@ -5,7 +5,7 @@
   <%= @attachment.name %>
 </p>
 
-<%= image_tag(@attachment.media.path) %>
+<%= image_tag(@attachment.media.url(:preview))%>
 
 <%= link_to 'Edit', edit_attachment_path(@attachment) %> |
 <%= link_to 'Back', attachments_path %>
