@@ -1,6 +1,6 @@
 # README
 
-This is sample project for generating thumbnail for image, pdf, powerpoint and video file uploads
+This is a sample project to generate thumbnail for image, pdf, powerpoint and video file uploads.
 
 # Dependencies
 
